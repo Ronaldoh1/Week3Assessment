@@ -13,14 +13,23 @@
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
-
+@property NSMutableArray *bikeStationsObjectsArray;
+@property BikeStationsDownloader *downloader;
 @end
 
 @implementation StationsListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.downloader = [BikeStationsDownloader new];
     //need to set the delegate.
+    self.downloader.ParentVC = self;
+    //call the method to begin download data.
+    [self.downloader pullBikeStationDataFromDivvyAPI];
+
+
+    //initialize mutable array to store Bike Station Objects.
+    self.bikeStationsObjectsArray = [NSMutableArray new];
     
 }
 
@@ -28,6 +37,14 @@
 
 -(void)gotBikeStations:(NSArray *)bikeStationsArray{
 
+    for (NSDictionary *someDictionary in bikeStationsArray){
+
+        BikeStation *bikeStation = [[BikeStation alloc]initWithDictionary:someDictionary];
+        [self.bikeStationsObjectsArray addObject:bikeStation];
+
+    }
+    //reload the table view data after array has been filled with data.
+    [self.tableView reloadData];
 
 }
 
@@ -36,13 +53,15 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // TODO:
-    return 1;
+    return self.bikeStationsObjectsArray.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    // TODO:
+
+    cell.textLabel.text = [self.bikeStationsObjectsArray[indexPath.row]bikeStationAddress];
+    
     return cell;
 }
 
