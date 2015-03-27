@@ -12,7 +12,9 @@
 //store the following properties for a bike station. 
 @property NSString *bikeStationAddress;
 @property NSInteger bikeCount;
-
+@property double longitude;
+@property double latitude;
+@property NSString *bikeStationName;
 
 -(instancetype)initWithDictionary:(NSDictionary *)dictionary;
 

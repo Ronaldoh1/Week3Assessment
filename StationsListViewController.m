@@ -9,6 +9,7 @@
 #import "StationsListViewController.h"
 #import "BikeStation.h"
 #import "BikeStationsDownloader.h"
+#import "MapViewController.h"
 @interface StationsListViewController () <UITableViewDelegate, UITableViewDataSource, BikeStationDownloaderDelegate>
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
@@ -46,6 +47,14 @@
     //reload the table view data after array has been filled with data.
     [self.tableView reloadData];
 
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+
+    MapViewController *mapVC = [segue destinationViewController];
+    mapVC.bikeStation = [self.bikeStationsObjectsArray objectAtIndex: self.tableView.indexPathForSelectedRow.row];
+    
+    
 }
 
 #pragma mark - UITableView

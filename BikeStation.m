@@ -12,7 +12,10 @@
 
 -(instancetype)initWithDictionary:(NSDictionary *)dictionary{
     self.bikeStationAddress = dictionary[@"stAddress1"];
+    self.bikeStationName = dictionary[@"stationName"];
     self.bikeCount = [dictionary[@"availableBikes"] integerValue];
+    self.longitude = [dictionary[@"longitude"] doubleValue];
+    self.latitude = [dictionary[@"latitude"] doubleValue];
 
 
     return self;
