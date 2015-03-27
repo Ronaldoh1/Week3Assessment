@@ -61,7 +61,12 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
 
     cell.textLabel.text = [self.bikeStationsObjectsArray[indexPath.row]bikeStationAddress];
-    
+
+    NSInteger bikeStationCount = [self.bikeStationsObjectsArray[indexPath.row]bikeCount];
+    NSString *somebikeStation = [NSString stringWithFormat:@"%ld",(long)bikeStationCount];
+
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ Bikes Available", somebikeStation];
+
     return cell;
 }
 
