@@ -131,7 +131,7 @@
             self.allSteps = [self.allSteps stringByAppendingString:newStepString];
             self.allSteps = [self.allSteps stringByAppendingString:@"\n\n"];
         }
-        self.bikeStation.distanceFromCurrentLocation = route.distance;
+        
         
     }];
     return self.allSteps;

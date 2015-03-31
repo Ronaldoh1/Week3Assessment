@@ -46,6 +46,7 @@
     //call helper method to update user's current location.
     [self UpdateUserCurrentLocation];
 
+
 }
 //--Helper method to update the current location--//
 -(void)UpdateUserCurrentLocation{
@@ -53,7 +54,31 @@
     [self.locationManager startUpdatingLocation];
 
 }
+-(void)sortArraybyDistance{
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"distanceFromCurrentLocation" ascending:self.isAscending];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    NSArray *sortedArray = [self.bikeStationsObjectsArray sortedArrayUsingDescriptors:sortDescriptors];
 
+    //allow user to sort with ascending or descending distance
+   // self.isAscending = !self.isAscending;
+
+    if(self.isFiltered){
+        sortedArray = [self.filteredTableData sortedArrayUsingDescriptors:sortDescriptors];
+        self.filteredTableData = [NSMutableArray new];
+        self.filteredTableData = [NSMutableArray arrayWithArray:sortedArray];
+    }
+    else{
+        sortedArray = [self.bikeStationsObjectsArray sortedArrayUsingDescriptors:sortDescriptors];
+        self.bikeStationsObjectsArray = [NSMutableArray new];
+        self.bikeStationsObjectsArray = [NSMutableArray arrayWithArray:sortedArray];
+    }
+
+
+    [self.tableView reloadData];
+    
+
+}
 //delegate method - we have the data now we need to extract it and add it to Bike Station objects for later use.
 #pragma mark - UISearchbarDelegate
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -80,12 +105,13 @@
         }
 
     }
-    
+     [self sortArraybyDistance];
     [self.tableView reloadData];
 }
 
 
 -(void)gotBikeStations:(NSArray *)bikeStationsArray{
+        NSMutableArray *someUnsortedArray =  [NSMutableArray new];
 
 
     for (NSDictionary *someDictionary in bikeStationsArray){
@@ -94,8 +120,22 @@
 
         //bikeStation.distanceFromCurrentLocation = [self.currentLocation distanceFromLocation:bikeStation.thebikeAnnotation.coordinate];
 
-        
-        [self.bikeStationsObjectsArray addObject:bikeStation];
+
+        [someUnsortedArray addObject:bikeStation];
+
+
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:bikeStation.latitude longitude:bikeStation.longitude];
+        bikeStation.distanceFromCurrentLocation = ([self.currentLocation distanceFromLocation:location]/1609.34);
+
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"distanceFromCurrentLocation" ascending:true];
+        NSArray *sortDescriptors = @[sortDescriptor];
+
+
+
+        self.bikeStationsObjectsArray = [someUnsortedArray sortedArrayUsingDescriptors:sortDescriptors];
+
+
+
 
 
     }
@@ -152,8 +192,8 @@
   NSInteger bikeStationCount = bikeStation.bikeCount;
     NSString *somebikeStation = [NSString stringWithFormat:@"%ld",(long)bikeStationCount];
 
-   cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ Bikes Available", somebikeStation];
-
+   cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ Bikes Available and is %f miles away", somebikeStation,bikeStation.distanceFromCurrentLocation];
+   
     return cell;
 }
 
