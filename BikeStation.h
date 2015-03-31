@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
 @interface BikeStation : NSObject
 //store the following properties for a bike station. 
@@ -15,6 +16,8 @@
 @property double longitude;
 @property double latitude;
 @property NSString *bikeStationName;
+@property float distanceFromCurrentLocation;
+@property MKPointAnnotation *thebikeAnnotation;
 
 -(instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
